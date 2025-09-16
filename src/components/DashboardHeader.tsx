@@ -2,16 +2,24 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Search, 
   Bell, 
   Plus, 
   Filter,
   Calendar,
-  Users
+  Users,
+  LayoutGrid,
+  Table
 } from "lucide-react";
 
-export function DashboardHeader() {
+interface DashboardHeaderProps {
+  currentView: 'kanban' | 'table';
+  onViewChange: (view: 'kanban' | 'table') => void;
+}
+
+export function DashboardHeader({ currentView, onViewChange }: DashboardHeaderProps) {
   return (
     <header className="bg-card border-b border-border shadow-card">
       <div className="px-6 py-4">
@@ -28,6 +36,19 @@ export function DashboardHeader() {
           </div>
           
           <div className="flex items-center gap-4">
+            <Tabs value={currentView} onValueChange={(value) => onViewChange(value as 'kanban' | 'table')}>
+              <TabsList className="bg-background/50">
+                <TabsTrigger value="kanban" className="flex items-center gap-2">
+                  <LayoutGrid className="w-4 h-4" />
+                  Kanban
+                </TabsTrigger>
+                <TabsTrigger value="table" className="flex items-center gap-2">
+                  <Table className="w-4 h-4" />
+                  Bảng
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+            
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input 
