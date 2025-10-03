@@ -1,23 +1,47 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Eye, EyeOff, Mail, Lock } from "lucide-react";
+import { Eye, EyeOff, User, Lock } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface LoginFormProps {
   onSwitchToRegister: () => void;
 }
 
 export const LoginForm = ({ onSwitchToRegister }: LoginFormProps) => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log("Login:", { email, password });
+    setIsLoading(true);
+
+    // Giả lập đăng nhập
+    setTimeout(() => {
+      if (username === "sonle325" && password === "123456") {
+        toast({
+          title: "Đăng nhập thành công!",
+          description: "Chào mừng bạn trở lại.",
+        });
+        setTimeout(() => {
+          navigate("/");
+        }, 500);
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Đăng nhập thất bại",
+          description: "Tên đăng nhập hoặc mật khẩu không đúng.",
+        });
+        setIsLoading(false);
+      }
+    }, 800);
   };
 
   return (
@@ -33,16 +57,16 @@ export const LoginForm = ({ onSwitchToRegister }: LoginFormProps) => {
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="username">Tên đăng nhập</Label>
             <div className="relative">
-              <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
-                id="email"
-                type="email"
-                placeholder="example@email.com"
+                id="username"
+                type="text"
+                placeholder="sonle325"
                 className="pl-10"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 required
               />
             </div>
@@ -87,8 +111,8 @@ export const LoginForm = ({ onSwitchToRegister }: LoginFormProps) => {
           </div>
         </CardContent>
         <CardFooter className="space-y-4">
-          <Button type="submit" className="w-full gradient-bg">
-            Đăng nhập
+          <Button type="submit" className="w-full gradient-bg" disabled={isLoading}>
+            {isLoading ? "Đang đăng nhập..." : "Đăng nhập"}
           </Button>
           <p className="text-center text-sm text-muted-foreground">
             Chưa có tài khoản?{" "}
