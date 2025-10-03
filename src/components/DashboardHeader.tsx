@@ -3,18 +3,21 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { CreateTaskDialog } from "@/components/CreateTaskDialog";
 import { 
   Search, 
   Bell, 
-  Plus, 
   Filter,
   Calendar,
   Users,
   LayoutGrid,
   Table,
-  LogIn
+  LogIn,
+  LogOut
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { useTasks } from "@/contexts/TaskContext";
 
 interface DashboardHeaderProps {
   currentView: 'kanban' | 'table';
@@ -23,6 +26,12 @@ interface DashboardHeaderProps {
 
 export function DashboardHeader({ currentView, onViewChange }: DashboardHeaderProps) {
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
+  const { tasks } = useTasks();
+  
+  const totalTasks = tasks.length;
+  const inProgressTasks = tasks.filter(t => t.status === 'in-progress').length;
+  const doneTasks = tasks.filter(t => t.status === 'done').length;
   
   return (
     <header className="bg-card border-b border-border shadow-card">
@@ -71,10 +80,7 @@ export function DashboardHeader({ currentView, onViewChange }: DashboardHeaderPr
               Lịch
             </Button>
             
-            <Button size="sm" className="bg-gradient-primary hover:opacity-90">
-              <Plus className="w-4 h-4 mr-2" />
-              Tạo mới
-            </Button>
+            <CreateTaskDialog />
             
             <div className="flex items-center gap-3 pl-3 border-l border-border">
               <Button variant="ghost" size="sm" className="relative">
@@ -84,22 +90,39 @@ export function DashboardHeader({ currentView, onViewChange }: DashboardHeaderPr
                 </Badge>
               </Button>
               
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => navigate('/auth')}
-                className="gap-2"
-              >
-                <LogIn className="w-4 h-4" />
-                Đăng nhập
-              </Button>
-              
-              <Avatar className="w-8 h-8">
-                <AvatarImage src="/placeholder-avatar.jpg" alt="User" />
-                <AvatarFallback className="bg-primary text-primary-foreground text-sm">
-                  AD
-                </AvatarFallback>
-              </Avatar>
+              {user ? (
+                <>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => {
+                      logout();
+                      navigate('/auth');
+                    }}
+                    className="gap-2"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Đăng xuất
+                  </Button>
+                  
+                  <Avatar className="w-8 h-8">
+                    <AvatarImage src="/placeholder-avatar.jpg" alt="User" />
+                    <AvatarFallback className="bg-primary text-primary-foreground text-sm">
+                      {user.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                </>
+              ) : (
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => navigate('/auth')}
+                  className="gap-2"
+                >
+                  <LogIn className="w-4 h-4" />
+                  Đăng nhập
+                </Button>
+              )}
             </div>
           </div>
         </div>
@@ -111,17 +134,17 @@ export function DashboardHeader({ currentView, onViewChange }: DashboardHeaderPr
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-muted-foreground"></div>
             <span className="text-muted-foreground">Tổng công việc:</span>
-            <span className="font-semibold text-foreground">12</span>
+            <span className="font-semibold text-foreground">{totalTasks}</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-warning"></div>
             <span className="text-muted-foreground">Đang làm:</span>
-            <span className="font-semibold text-foreground">4</span>
+            <span className="font-semibold text-foreground">{inProgressTasks}</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-success"></div>
             <span className="text-muted-foreground">Hoàn thành:</span>
-            <span className="font-semibold text-foreground">6</span>
+            <span className="font-semibold text-foreground">{doneTasks}</span>
           </div>
           <div className="flex items-center gap-2 ml-auto">
             <Users className="w-4 h-4 text-muted-foreground" />

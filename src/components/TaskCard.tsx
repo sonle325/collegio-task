@@ -14,7 +14,7 @@ interface TaskCardProps {
     initials: string;
   };
   dueDate: string;
-  status: "todo" | "in-progress" | "done";
+  status: "todo" | "in-progress" | "review" | "done";
   tags?: string[];
 }
 

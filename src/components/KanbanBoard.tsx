@@ -3,88 +3,38 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-const sampleTasks = {
-  todo: [
-    {
-      id: "1",
-      title: "Thiết kế giao diện đăng nhập",
-      description: "Tạo mockup và wireframe cho trang đăng nhập với UX/UI hiện đại",
-      priority: "high" as const,
-      assignee: { name: "Nguyễn Văn A", initials: "NVA" },
-      dueDate: "25/09",
-      status: "todo" as const,
-      tags: ["UI/UX", "Frontend"]
-    },
-    {
-      id: "2", 
-      title: "Nghiên cứu API thanh toán",
-      description: "Tìm hiểu và so sánh các giải pháp thanh toán như VNPay, MoMo",
-      priority: "medium" as const,
-      assignee: { name: "Trần Thị B", initials: "TTB" },
-      dueDate: "28/09",
-      status: "todo" as const,
-      tags: ["Backend", "API"]
-    }
-  ],
-  inProgress: [
-    {
-      id: "3",
-      title: "Xây dựng dashboard chính",
-      description: "Phát triển giao diện dashboard với các widgets thống kê",
-      priority: "high" as const,
-      assignee: { name: "Lê Văn C", initials: "LVC" },
-      dueDate: "30/09",
-      status: "in-progress" as const,
-      tags: ["Frontend", "Dashboard"]
-    },
-    {
-      id: "4",
-      title: "Cấu hình database",
-      description: "Thiết lập cơ sở dữ liệu và các bảng cần thiết",
-      priority: "medium" as const,
-      assignee: { name: "Phạm Văn D", initials: "PVD" },
-      dueDate: "27/09",
-      status: "in-progress" as const,
-      tags: ["Database", "Backend"]
-    }
-  ],
-  done: [
-    {
-      id: "5",
-      title: "Khởi tạo dự án",
-      description: "Setup môi trường phát triển và cấu trúc thư mục",
-      priority: "low" as const,
-      assignee: { name: "Hoàng Thị E", initials: "HTE" },
-      dueDate: "20/09",
-      status: "done" as const,
-      tags: ["Setup", "DevOps"]
-    }
-  ]
-};
-
-const columns = [
-  { 
-    id: "todo", 
-    title: "Cần làm", 
-    tasks: sampleTasks.todo,
-    color: "bg-gradient-to-br from-muted to-muted/50"
-  },
-  { 
-    id: "inProgress", 
-    title: "Đang làm", 
-    tasks: sampleTasks.inProgress,
-    color: "bg-gradient-to-br from-warning/10 to-warning/5"
-  },
-  { 
-    id: "done", 
-    title: "Hoàn thành", 
-    tasks: sampleTasks.done,
-    color: "bg-gradient-to-br from-success/10 to-success/5"
-  }
-];
+import { useTasks } from "@/contexts/TaskContext";
 
 export function KanbanBoard() {
+  const { tasks } = useTasks();
+  
+  const columns = [
+    { 
+      id: "todo", 
+      title: "Cần làm", 
+      tasks: tasks.filter(t => t.status === "todo"),
+      color: "bg-gradient-to-br from-muted to-muted/50"
+    },
+    { 
+      id: "in-progress", 
+      title: "Đang làm", 
+      tasks: tasks.filter(t => t.status === "in-progress"),
+      color: "bg-gradient-to-br from-warning/10 to-warning/5"
+    },
+    { 
+      id: "review", 
+      title: "Đang review", 
+      tasks: tasks.filter(t => t.status === "review"),
+      color: "bg-gradient-to-br from-primary/10 to-primary/5"
+    },
+    { 
+      id: "done", 
+      title: "Hoàn thành", 
+      tasks: tasks.filter(t => t.status === "done"),
+      color: "bg-gradient-to-br from-success/10 to-success/5"
+    }
+  ];
+  
   return (
     <div className="flex gap-6 h-full p-6 overflow-x-auto">
       {columns.map((column) => (
@@ -101,7 +51,16 @@ export function KanbanBoard() {
             <CardContent className="space-y-3 pb-4">
               {column.tasks.map((task) => (
                 <div key={task.id} className="animate-fade-in">
-                  <TaskCard {...task} />
+                  <TaskCard 
+                    id={task.id}
+                    title={task.title}
+                    description={task.description}
+                    priority={task.priority}
+                    assignee={{ name: task.assignee, initials: task.assignee.split(' ').map(n => n[0]).join('').toUpperCase() }}
+                    dueDate={new Date().toLocaleDateString('vi-VN')}
+                    status={task.status}
+                    tags={[task.category]}
+                  />
                 </div>
               ))}
               <Button 

@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Eye, EyeOff, User, Lock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface LoginFormProps {
   onSwitchToRegister: () => void;
@@ -14,6 +15,7 @@ interface LoginFormProps {
 export const LoginForm = ({ onSwitchToRegister }: LoginFormProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -26,6 +28,7 @@ export const LoginForm = ({ onSwitchToRegister }: LoginFormProps) => {
     // Giả lập đăng nhập
     setTimeout(() => {
       if (username === "sonle325" && password === "123456") {
+        login(username);
         toast({
           title: "Đăng nhập thành công!",
           description: "Chào mừng bạn trở lại.",
