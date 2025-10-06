@@ -11,6 +11,8 @@ export interface Task {
   category: string;
   progress: number;
   createdBy: string;
+  startDate?: Date;
+  dueDate?: Date;
 }
 
 interface TaskContextType {
@@ -34,6 +36,8 @@ const initialTasks: Task[] = [
     category: "Frontend",
     progress: 60,
     createdBy: "system",
+    startDate: new Date(),
+    dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
   },
 ];
 

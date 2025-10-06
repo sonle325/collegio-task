@@ -19,10 +19,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { Plus, CalendarIcon } from "lucide-react";
 import { useTasks } from "@/contexts/TaskContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 export function CreateTaskDialog() {
   const [open, setOpen] = useState(false);
@@ -37,6 +45,8 @@ export function CreateTaskDialog() {
     priority: "medium" as const,
     category: "Frontend",
     progress: 0,
+    startDate: undefined as Date | undefined,
+    dueDate: undefined as Date | undefined,
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -70,6 +80,8 @@ export function CreateTaskDialog() {
       priority: "medium",
       category: "Frontend",
       progress: 0,
+      startDate: undefined,
+      dueDate: undefined,
     });
     setOpen(false);
   };
@@ -171,6 +183,60 @@ export function CreateTaskDialog() {
                   <SelectItem value="done">Hoàn thành</SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label>Ngày bắt đầu</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "justify-start text-left font-normal",
+                        !formData.startDate && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {formData.startDate ? format(formData.startDate, "dd/MM/yyyy") : "Chọn ngày"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={formData.startDate}
+                      onSelect={(date) => setFormData({ ...formData, startDate: date })}
+                      initialFocus
+                      className="pointer-events-auto"
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+              <div className="grid gap-2">
+                <Label>Ngày hết hạn</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "justify-start text-left font-normal",
+                        !formData.dueDate && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {formData.dueDate ? format(formData.dueDate, "dd/MM/yyyy") : "Chọn ngày"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={formData.dueDate}
+                      onSelect={(date) => setFormData({ ...formData, dueDate: date })}
+                      initialFocus
+                      className="pointer-events-auto"
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
             </div>
           </div>
           <DialogFooter>

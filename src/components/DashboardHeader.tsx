@@ -20,8 +20,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useTasks } from "@/contexts/TaskContext";
 
 interface DashboardHeaderProps {
-  currentView: 'kanban' | 'table';
-  onViewChange: (view: 'kanban' | 'table') => void;
+  currentView: 'kanban' | 'table' | 'calendar';
+  onViewChange: (view: 'kanban' | 'table' | 'calendar') => void;
 }
 
 export function DashboardHeader({ currentView, onViewChange }: DashboardHeaderProps) {
@@ -49,7 +49,7 @@ export function DashboardHeader({ currentView, onViewChange }: DashboardHeaderPr
           </div>
           
           <div className="flex items-center gap-4">
-            <Tabs value={currentView} onValueChange={(value) => onViewChange(value as 'kanban' | 'table')}>
+            <Tabs value={currentView} onValueChange={(value) => onViewChange(value as 'kanban' | 'table' | 'calendar')}>
               <TabsList className="bg-background/50">
                 <TabsTrigger value="kanban" className="flex items-center gap-2">
                   <LayoutGrid className="w-4 h-4" />
@@ -58,6 +58,10 @@ export function DashboardHeader({ currentView, onViewChange }: DashboardHeaderPr
                 <TabsTrigger value="table" className="flex items-center gap-2">
                   <Table className="w-4 h-4" />
                   Bảng
+                </TabsTrigger>
+                <TabsTrigger value="calendar" className="flex items-center gap-2">
+                  <Calendar className="w-4 h-4" />
+                  Lịch
                 </TabsTrigger>
               </TabsList>
             </Tabs>
@@ -73,11 +77,6 @@ export function DashboardHeader({ currentView, onViewChange }: DashboardHeaderPr
             <Button variant="outline" size="sm">
               <Filter className="w-4 h-4 mr-2" />
               Lọc
-            </Button>
-            
-            <Button variant="outline" size="sm">
-              <Calendar className="w-4 h-4 mr-2" />
-              Lịch
             </Button>
             
             <CreateTaskDialog />
