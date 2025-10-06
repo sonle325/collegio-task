@@ -2,10 +2,11 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar } from "@/components/ui/calendar";
-import { useTasks } from "@/contexts/TaskContext";
+import { useTasks, Task } from "@/contexts/TaskContext";
 import { format, isSameDay } from "date-fns";
 import { vi } from "date-fns/locale";
 import { CalendarDays, Clock } from "lucide-react";
+import { TaskDetailDialog } from "@/components/TaskDetailDialog";
 
 const statusConfig = {
   todo: { label: "Cần làm", variant: "outline" as const },
@@ -23,6 +24,7 @@ const priorityConfig = {
 export function CalendarView() {
   const { tasks } = useTasks();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
   const tasksWithDates = tasks.filter(task => task.dueDate || task.startDate);
   
@@ -99,7 +101,8 @@ export function CalendarView() {
                 {selectedDateTasks.map(task => (
                   <div
                     key={task.id}
-                    className="p-4 border rounded-lg hover:bg-muted/30 transition-colors"
+                    className="p-4 border rounded-lg hover:bg-muted/30 transition-colors cursor-pointer"
+                    onClick={() => setSelectedTask(task)}
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex-1">
@@ -159,7 +162,8 @@ export function CalendarView() {
               {upcomingTasks.map(task => (
                 <div
                   key={task.id}
-                  className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/30 transition-colors"
+                  className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/30 transition-colors cursor-pointer"
+                  onClick={() => setSelectedTask(task)}
                 >
                   <div className="flex-1">
                     <h4 className="font-medium text-foreground">{task.title}</h4>
@@ -181,6 +185,14 @@ export function CalendarView() {
           )}
         </CardContent>
       </Card>
+
+      {selectedTask && (
+        <TaskDetailDialog
+          task={selectedTask}
+          open={!!selectedTask}
+          onOpenChange={(open) => !open && setSelectedTask(null)}
+        />
+      )}
     </div>
   );
 }

@@ -16,6 +16,7 @@ interface TaskCardProps {
   dueDate: string;
   status: "todo" | "in-progress" | "review" | "done";
   tags?: string[];
+  onClick?: () => void;
 }
 
 const priorityConfig = {
@@ -30,12 +31,16 @@ export function TaskCard({
   priority, 
   assignee, 
   dueDate, 
-  tags = [] 
+  tags = [],
+  onClick
 }: TaskCardProps) {
   const priorityInfo = priorityConfig[priority];
   
   return (
-    <Card className="group cursor-pointer transition-all duration-300 hover:shadow-hover hover:scale-105 bg-gradient-to-br from-card to-card/50 border-border/50">
+    <Card 
+      className="group cursor-pointer transition-all duration-300 hover:shadow-hover hover:scale-105 bg-gradient-to-br from-card to-card/50 border-border/50"
+      onClick={onClick}
+    >
       <CardContent className="p-4 space-y-3">
         <div className="flex items-start justify-between">
           <h3 className="font-semibold text-sm leading-tight text-card-foreground group-hover:text-primary transition-colors">

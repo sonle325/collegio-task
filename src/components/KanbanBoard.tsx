@@ -3,10 +3,13 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useTasks } from "@/contexts/TaskContext";
+import { useTasks, Task } from "@/contexts/TaskContext";
+import { TaskDetailDialog } from "@/components/TaskDetailDialog";
+import { useState } from "react";
 
 export function KanbanBoard() {
   const { tasks } = useTasks();
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   
   const columns = [
     { 
@@ -60,6 +63,7 @@ export function KanbanBoard() {
                     dueDate={new Date().toLocaleDateString('vi-VN')}
                     status={task.status}
                     tags={[task.category]}
+                    onClick={() => setSelectedTask(task)}
                   />
                 </div>
               ))}
@@ -74,6 +78,14 @@ export function KanbanBoard() {
           </Card>
         </div>
       ))}
+
+      {selectedTask && (
+        <TaskDetailDialog
+          task={selectedTask}
+          open={!!selectedTask}
+          onOpenChange={(open) => !open && setSelectedTask(null)}
+        />
+      )}
     </div>
   );
 }

@@ -1,5 +1,12 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 
+export interface Comment {
+  id: string;
+  text: string;
+  author: string;
+  createdAt: Date;
+}
+
 export interface Task {
   id: string;
   title: string;
@@ -13,6 +20,7 @@ export interface Task {
   createdBy: string;
   startDate?: Date;
   dueDate?: Date;
+  comments?: Comment[];
 }
 
 interface TaskContextType {
@@ -20,6 +28,7 @@ interface TaskContextType {
   addTask: (task: Omit<Task, "id">) => void;
   updateTask: (id: string, updates: Partial<Task>) => void;
   deleteTask: (id: string) => void;
+  addComment: (taskId: string, comment: Omit<Comment, "id" | "createdAt">) => void;
 }
 
 const TaskContext = createContext<TaskContextType | undefined>(undefined);
@@ -62,8 +71,25 @@ export function TaskProvider({ children }: { children: ReactNode }) {
     setTasks(tasks.filter(task => task.id !== id));
   };
 
+  const addComment = (taskId: string, comment: Omit<Comment, "id" | "createdAt">) => {
+    setTasks(tasks.map(task => {
+      if (task.id === taskId) {
+        const newComment: Comment = {
+          id: Date.now().toString(),
+          createdAt: new Date(),
+          ...comment,
+        };
+        return {
+          ...task,
+          comments: [...(task.comments || []), newComment],
+        };
+      }
+      return task;
+    }));
+  };
+
   return (
-    <TaskContext.Provider value={{ tasks, addTask, updateTask, deleteTask }}>
+    <TaskContext.Provider value={{ tasks, addTask, updateTask, deleteTask, addComment }}>
       {children}
     </TaskContext.Provider>
   );

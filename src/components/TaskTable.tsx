@@ -12,6 +12,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar } from "lucide-react";
 import { useTasks } from "@/contexts/TaskContext";
+import { TaskDetailDialog } from "@/components/TaskDetailDialog";
+import { useState } from "react";
+import { Task } from "@/contexts/TaskContext";
 
 const priorityConfig = {
   low: { label: "Thấp", variant: "secondary" as const, color: "text-muted-foreground" },
@@ -28,6 +31,7 @@ const statusConfig = {
 
 export function TaskTable() {
   const { tasks } = useTasks();
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   
   const tasksByCategory = {
     "Frontend": tasks.filter(t => t.category === "Frontend"),
@@ -106,7 +110,11 @@ export function TaskTable() {
                         const statusInfo = statusConfig[task.status];
                         
                         return (
-                          <TableRow key={task.id} className="hover:bg-muted/30 transition-colors">
+                          <TableRow 
+                            key={task.id} 
+                            className="hover:bg-muted/30 transition-colors cursor-pointer"
+                            onClick={() => setSelectedTask(task)}
+                          >
                             <TableCell>
                               <div>
                                 <div className="font-medium text-foreground">{task.title}</div>
@@ -157,6 +165,14 @@ export function TaskTable() {
           </TabsContent>
         ))}
       </Tabs>
+
+      {selectedTask && (
+        <TaskDetailDialog
+          task={selectedTask}
+          open={!!selectedTask}
+          onOpenChange={(open) => !open && setSelectedTask(null)}
+        />
+      )}
     </div>
   );
 }
