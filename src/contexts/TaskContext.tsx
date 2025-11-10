@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, ReactNode } from "react";
+import { ProjectContext } from "./ProjectContext";
 
 export interface Comment {
   id: string;
@@ -18,6 +19,7 @@ export interface Task {
   category: string;
   progress: number;
   createdBy: string;
+  projectId: string;
   startDate?: Date;
   dueDate?: Date;
   comments?: Comment[];
@@ -45,6 +47,7 @@ const initialTasks: Task[] = [
     category: "Frontend",
     progress: 60,
     createdBy: "system",
+    projectId: "1",
     startDate: new Date(),
     dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
   },
@@ -59,6 +62,7 @@ const initialTasks: Task[] = [
     category: "Backend",
     progress: 100,
     createdBy: "system",
+    projectId: "1",
     startDate: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000),
     dueDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
   },
@@ -73,6 +77,7 @@ const initialTasks: Task[] = [
     category: "Backend",
     progress: 85,
     createdBy: "system",
+    projectId: "1",
     startDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
     dueDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
   },
@@ -87,6 +92,7 @@ const initialTasks: Task[] = [
     category: "Testing",
     progress: 45,
     createdBy: "system",
+    projectId: "1",
     startDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
     dueDate: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
   },
@@ -101,6 +107,7 @@ const initialTasks: Task[] = [
     category: "Frontend",
     progress: 0,
     createdBy: "system",
+    projectId: "1",
     startDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
     dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
   },
@@ -115,6 +122,7 @@ const initialTasks: Task[] = [
     category: "Backend",
     progress: 0,
     createdBy: "system",
+    projectId: "1",
     startDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     dueDate: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000),
   },
@@ -129,6 +137,7 @@ const initialTasks: Task[] = [
     category: "Design",
     progress: 90,
     createdBy: "system",
+    projectId: "4",
     startDate: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000),
     dueDate: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
   },
@@ -143,6 +152,7 @@ const initialTasks: Task[] = [
     category: "DevOps",
     progress: 100,
     createdBy: "system",
+    projectId: "1",
     startDate: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000),
     dueDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
   },
@@ -157,6 +167,7 @@ const initialTasks: Task[] = [
     category: "Documentation",
     progress: 30,
     createdBy: "system",
+    projectId: "1",
     startDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
     dueDate: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000),
   },
@@ -171,6 +182,7 @@ const initialTasks: Task[] = [
     category: "Frontend",
     progress: 0,
     createdBy: "system",
+    projectId: "1",
     startDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
     dueDate: new Date(Date.now() + 20 * 24 * 60 * 60 * 1000),
   },
@@ -185,6 +197,7 @@ const initialTasks: Task[] = [
     category: "Security",
     progress: 50,
     createdBy: "system",
+    projectId: "1",
     startDate: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000),
     dueDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
   },
@@ -199,6 +212,7 @@ const initialTasks: Task[] = [
     category: "Frontend",
     progress: 80,
     createdBy: "system",
+    projectId: "1",
     startDate: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000),
     dueDate: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000),
   },
@@ -213,6 +227,7 @@ const initialTasks: Task[] = [
     category: "Marketing",
     progress: 55,
     createdBy: "system",
+    projectId: "2",
     startDate: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000),
     dueDate: new Date(Date.now() + 24 * 24 * 60 * 60 * 1000),
   },
@@ -227,6 +242,7 @@ const initialTasks: Task[] = [
     category: "Marketing",
     progress: 0,
     createdBy: "system",
+    projectId: "2",
     startDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
     dueDate: new Date(Date.now() + 17 * 24 * 60 * 60 * 1000),
   },
@@ -241,6 +257,7 @@ const initialTasks: Task[] = [
     category: "Content",
     progress: 40,
     createdBy: "system",
+    projectId: "3",
     startDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
     dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
   },
@@ -255,6 +272,7 @@ const initialTasks: Task[] = [
     category: "Content",
     progress: 65,
     createdBy: "system",
+    projectId: "3",
     startDate: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000),
     dueDate: new Date(Date.now() + 20 * 24 * 60 * 60 * 1000),
   },
@@ -269,6 +287,7 @@ const initialTasks: Task[] = [
     category: "Marketing",
     progress: 85,
     createdBy: "system",
+    projectId: "2",
     startDate: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000),
     dueDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
   },
@@ -283,6 +302,7 @@ const initialTasks: Task[] = [
     category: "Content",
     progress: 0,
     createdBy: "system",
+    projectId: "3",
     startDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
     dueDate: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000),
   },
@@ -297,6 +317,7 @@ const initialTasks: Task[] = [
     category: "Marketing",
     progress: 30,
     createdBy: "system",
+    projectId: "2",
     startDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
     dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
   },
@@ -311,6 +332,7 @@ const initialTasks: Task[] = [
     category: "Content",
     progress: 0,
     createdBy: "system",
+    projectId: "3",
     startDate: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
     dueDate: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000),
   },
@@ -325,6 +347,7 @@ const initialTasks: Task[] = [
     category: "Marketing",
     progress: 100,
     createdBy: "system",
+    projectId: "2",
     startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
     dueDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
   },
@@ -339,8 +362,39 @@ const initialTasks: Task[] = [
     category: "Content",
     progress: 75,
     createdBy: "system",
+    projectId: "3",
     startDate: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000),
     dueDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
+  },
+  {
+    id: "23",
+    title: "Brand Identity Guidelines",
+    description: "Tạo hệ thống hướng dẫn sử dụng thương hiệu đầy đủ",
+    assignee: "Đặng Văn G",
+    avatar: "/placeholder-avatar.jpg",
+    status: "in-progress",
+    priority: "high",
+    category: "Branding",
+    progress: 60,
+    createdBy: "system",
+    projectId: "4",
+    startDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+    dueDate: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
+  },
+  {
+    id: "24",
+    title: "Brand Voice Development",
+    description: "Xây dựng tone & manner cho thương hiệu",
+    assignee: "Nguyễn Thị K",
+    avatar: "/placeholder-avatar.jpg",
+    status: "review",
+    priority: "medium",
+    category: "Branding",
+    progress: 80,
+    createdBy: "system",
+    projectId: "4",
+    startDate: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000),
+    dueDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
   },
 ];
 
@@ -391,8 +445,20 @@ export function TaskProvider({ children }: { children: ReactNode }) {
 
 export function useTasks() {
   const context = useContext(TaskContext);
+  const projectContext = useContext(ProjectContext);
+  
   if (context === undefined) {
     throw new Error("useTasks must be used within a TaskProvider");
   }
+  
+  // If ProjectContext is available, filter tasks by current project
+  if (projectContext) {
+    const { currentProject } = projectContext;
+    return {
+      ...context,
+      tasks: context.tasks.filter(task => task.projectId === currentProject.id),
+    };
+  }
+  
   return context;
 }

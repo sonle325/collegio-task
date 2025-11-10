@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CreateTaskDialog } from "@/components/CreateTaskDialog";
+import { ProjectSelector } from "@/components/ProjectSelector";
 import { 
   Search, 
   Bell, 
@@ -18,6 +19,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTasks } from "@/contexts/TaskContext";
+import { useProjects } from "@/contexts/ProjectContext";
 
 interface DashboardHeaderProps {
   currentView: 'kanban' | 'table' | 'calendar';
@@ -28,24 +30,19 @@ export function DashboardHeader({ currentView, onViewChange }: DashboardHeaderPr
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const { tasks } = useTasks();
+  const { currentProject } = useProjects();
   
-  const totalTasks = tasks.length;
-  const inProgressTasks = tasks.filter(t => t.status === 'in-progress').length;
-  const doneTasks = tasks.filter(t => t.status === 'done').length;
+  const currentProjectTasks = tasks.filter(t => t.projectId === currentProject.id);
+  const totalTasks = currentProjectTasks.length;
+  const inProgressTasks = currentProjectTasks.filter(t => t.status === 'in-progress').length;
+  const doneTasks = currentProjectTasks.filter(t => t.status === 'done').length;
   
   return (
     <header className="bg-card border-b border-border shadow-card">
       <div className="px-6 py-4">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-4">
-            <div>
-              <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                Quản lý Công việc
-              </h1>
-              <p className="text-sm text-muted-foreground">
-                Dashboard quản lý dự án và công việc nhóm
-              </p>
-            </div>
+            <ProjectSelector />
           </div>
           
           <div className="flex items-center gap-4">

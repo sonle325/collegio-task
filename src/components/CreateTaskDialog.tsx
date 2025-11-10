@@ -27,6 +27,7 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { Plus, CalendarIcon } from "lucide-react";
 import { useTasks } from "@/contexts/TaskContext";
+import { useProjects } from "@/contexts/ProjectContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
@@ -35,6 +36,7 @@ import { cn } from "@/lib/utils";
 export function CreateTaskDialog() {
   const [open, setOpen] = useState(false);
   const { addTask } = useTasks();
+  const { currentProject } = useProjects();
   const { user } = useAuth();
   const { toast } = useToast();
   const [formData, setFormData] = useState({
@@ -65,6 +67,7 @@ export function CreateTaskDialog() {
       ...formData,
       avatar: "/placeholder-avatar.jpg",
       createdBy: user.username,
+      projectId: currentProject.id,
     });
 
     toast({
